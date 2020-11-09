@@ -98,4 +98,5 @@ export class KeyManagementSystem extends AbstractKeyManagementSystem {
     debug('Deleting', kid)
     return await this.keyStore.delete(kid)
   }
+
 }
