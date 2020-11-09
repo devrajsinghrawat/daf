@@ -1,5 +1,5 @@
 {
-  "version": "2.2.1",
+  "version": "6.3.0",
   "packages": [
     "packages/*"
   ],
@@ -10,7 +10,9 @@
   },
   "command": {
     "publish": {
-      "allowBranch": "master",
+      "allowBranch": [
+        "master"
+      ],
       "conventionalCommits": true,
       "gitRemote": "origin",
       "message": "chore(release): %s"

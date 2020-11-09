@@ -1,78 +1,49 @@
-import * as Daf from 'daf-core'
-import * as DafEthr from 'daf-ethr-did'
-import * as DafFs from 'daf-fs'
-import * as DafLibSodium from 'daf-libsodium'
-import * as W3c from 'daf-w3c'
-import * as TG from 'daf-trust-graph'
-import * as DBG from 'daf-debug'
-import * as DidJwt from 'daf-did-jwt'
-import { DafUniversalResolver } from 'daf-resolver-universal'
-
-import Debug from 'debug'
-Debug.enable('*')
-
-const messageValidator = new DBG.MessageValidator()
-messageValidator.setNext(new DidJwt.MessageValidator()).setNext(new W3c.MessageValidator())
-
-const actionHandler = new DBG.ActionHandler()
-actionHandler.setNext(new TG.ActionHandler()).setNext(new W3c.ActionHandler())
-
-const infuraProjectId = '5ffc47f65c4042ce847ef66a3fa70d4c'
-
-const didResolver = new DafUniversalResolver({ url: 'https://uniresolver.io/1.0/identifiers/' })
-
-export const core = new Daf.Core({
-  identityProviders: [
-    new DafEthr.IdentityProvider({
-      kms: new DafLibSodium.KeyManagementSystem(new DafFs.KeyStore('./key-store.json')),
-      identityStore: new DafFs.IdentityStore('./identity-store.json'),
-      network: 'rinkeby',
-      rpcUrl: 'https://rinkeby.infura.io/v3/' + infuraProjectId,
-      resolver: didResolver,
-    }),
-  ],
-  serviceControllers: [],
-  didResolver,
-  messageValidator,
-  actionHandler,
-})
+import { AbstractIdentity, EventTypes, Message, Credential } from 'daf-core'
+import { ActionSendDIDComm, ActionTypes } from 'daf-did-comm'
+import { ActionSignW3cVc, ActionTypes as W3cActionTypes } from 'daf-w3c'
+import { agent } from './setup'
 
 async function main() {
-  // Get or create new issuer
-  let identity: Daf.AbstractIdentity
-  const identities = await core.identityManager.getIdentities()
+  // Getting existing identity or creating a new one
+  let identity: AbstractIdentity
+  const identities = await agent.identityManager.getIdentities()
   if (identities.length > 0) {
     identity = identities[0]
   } else {
-    const identityProviders = await core.identityManager.getIdentityProviderTypes()
-    identity = await core.identityManager.createIdentity(identityProviders[0].type)
+    identity = await agent.identityManager.createIdentity()
   }
 
-  // Sign credential
-  const credential = await core.handleAction({
-    type: W3c.ActionTypes.signVc,
-    did: identity.did,
+  // Sign verifiable credential
+  const credential: Credential = await agent.handleAction({
+    type: W3cActionTypes.signCredentialJwt,
     data: {
-      sub: 'did:web:uport.me',
-      vc: {
-        '@context': ['https://www.w3.org/2018/credentials/v1'],
-        type: ['VerifiableCredential'],
-        credentialSubject: {
-          you: 'Rock',
-        },
+      issuer: identity.did,
+      '@context': ['https://www.w3.org/2018/credentials/v1'],
+      type: ['VerifiableCredential'],
+      credentialSubject: {
+        id: 'did:web:uport.me',
+        you: 'Rock',
       },
     },
-  } as W3c.ActionSignW3cVc)
+  } as ActionSignW3cVc)
 
-  // Send credential using TrustGraph
-  await core.handleAction({
-    type: TG.ActionTypes.sendJwt,
+  // Send verifiable credential using DIDComm
+  const message = await agent.handleAction({
+    type: ActionTypes.sendMessageDIDCommAlpha1,
     data: {
       from: identity.did,
       to: 'did:web:uport.me',
-      jwt: credential,
+      type: 'jwt',
+      body: credential.raw,
     },
-  } as TG.ActionSendJWT)
+  } as ActionSendDIDComm)
+  console.log({ message })
 }
+
+// This is triggered when DAF successfully saves a new message
+// which can arrive from external services, or by sending it using `action.sendJwt`
+agent.on(EventTypes.savedMessage, async (message: Message) => {
+  console.log('\n\nSuccessfully sent message:', message)
+})
 
 main().catch(console.log)

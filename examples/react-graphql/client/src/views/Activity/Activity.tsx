@@ -11,7 +11,7 @@ import { useHistory, useRouteMatch } from 'react-router-dom'
 interface Activity {}
 
 const Activity: React.FC<Activity> = () => {
-  const [appState] = useContext(AppContext)
+  const { appState } = useContext(AppContext)
   const history = useHistory()
   const { url } = useRouteMatch()
 
@@ -21,24 +21,49 @@ const Activity: React.FC<Activity> = () => {
 
   return (
     <Page title={'Activity'}>
-      {data?.identity?.messagesAll?.map((msg: any) => (
+      <h2>Received messages</h2>
+      {data?.receivedMessages?.map((msg: any) => (
         <ActivityItem
           viewerDid={appState.defaultDid}
           id={msg.id}
-          date={msg.timestamp * 1000}
+          date={msg.createdAt}
           type={msg.type}
           key={msg.id}
-          sender={msg.sender}
-          receiver={msg.receiver}
+          from={msg.from}
+          to={msg.to}
           showRequest={() => history.push(`${url}/sdr/${msg.id}`)}
-          attachments={msg.vc}
+          attachments={msg.credentials}
           renderAttachments={(attachment: any) => (
             <Credential
-              iss={attachment.iss}
-              sub={attachment.sub}
+              issuer={attachment.issuer}
+              subject={attachment.subject}
               key={attachment.hash}
               onClick={() => history.push(`${url}/credential/${attachment.hash}`)}
-              fields={attachment.fields}
+              claims={attachment.claims}
+            />
+          )}
+        />
+      ))}
+
+      <h2>Sent messages</h2>
+      {data?.sentMessages?.map((msg: any) => (
+        <ActivityItem
+          viewerDid={appState.defaultDid}
+          id={msg.id}
+          date={msg.createdAt}
+          type={msg.type}
+          key={msg.id}
+          from={msg.from}
+          to={msg.to}
+          showRequest={() => history.push(`${url}/sdr/${msg.id}`)}
+          attachments={msg.credentials}
+          renderAttachments={(attachment: any) => (
+            <Credential
+              issuer={attachment.issuer}
+              subject={attachment.subject}
+              key={attachment.hash}
+              onClick={() => history.push(`${url}/credential/${attachment.hash}`)}
+              claims={attachment.claims}
             />
           )}
         />

@@ -3,22 +3,21 @@
   "references": [
     { "path": "daf-cli" },
     { "path": "daf-core" },
-    { "path": "daf-data-store" },
-    { "path": "daf-debug" },
     { "path": "daf-did-comm" },
     { "path": "daf-did-jwt" },
     { "path": "daf-ethr-did" },
+    { "path": "daf-elem-did" },
     { "path": "daf-fs" },
     { "path": "daf-libsodium" },
     { "path": "daf-local-storage" },
-    { "path": "daf-node-sqlite3" },
-    { "path": "daf-random" },
     { "path": "daf-react-native-async-storage" },
+    { "path": "daf-react-native-libsodium" },
     { "path": "daf-resolver" },
     { "path": "daf-resolver-universal" },
     { "path": "daf-selective-disclosure" },
     { "path": "daf-trust-graph" },
     { "path": "daf-url" },
+    { "path": "daf-web-did" },
     { "path": "daf-w3c" }
   ]
 }

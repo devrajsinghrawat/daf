@@ -7,8 +7,11 @@ import './data-explorer'
 import './graphql'
 import './sdr'
 import './msg'
+import './version'
+import './crypto'
 
-program.parse(process.argv)
 if (!process.argv.slice(2).length) {
   program.outputHelp()
+} else {
+  program.parse(process.argv)
 }

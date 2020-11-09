@@ -4,13 +4,13 @@ import { AbstractIdentity } from './abstract-identity'
 export abstract class AbstractIdentityProvider extends EventEmitter {
   abstract type: string
   abstract description: string
-  abstract createIdentity(): Promise<AbstractIdentity>
+  abstract createIdentity(options?: any): Promise<AbstractIdentity>
   abstract deleteIdentity(did: string): Promise<boolean>
   abstract getIdentities(): Promise<AbstractIdentity[]>
   abstract getIdentity(did: string): Promise<AbstractIdentity>
 
   exportIdentity(did: string): Promise<string> {
-    return Promise.reject('Method importIdentity not implemented')
+    return Promise.reject('Method exportIdentity not implemented')
   }
 
   importIdentity(secret: string): Promise<AbstractIdentity> {

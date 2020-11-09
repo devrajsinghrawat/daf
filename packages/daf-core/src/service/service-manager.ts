@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events'
-import { Resolver } from '../core'
+import { Resolver } from '../agent'
 import { AbstractServiceController, ServiceControllerDerived } from './abstract-service-controller'
 import { AbstractIdentity } from '../identity/abstract-identity'
-import { Message } from '../message/message'
+import { Message } from '../entities/message'
 import Debug from 'debug'
 const debug = Debug('daf:service-manager')
 

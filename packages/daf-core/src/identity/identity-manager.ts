@@ -12,21 +12,18 @@ export class IdentityManager {
     this.identityProviders = options.identityProviders
   }
 
-  async getIdentityProviderTypes(): Promise<{ type: string; description: string }[]> {
-    return this.identityProviders.map(provider => ({
-      type: provider.type,
-      description: provider.description,
-    }))
+  getIdentityProviders(): AbstractIdentityProvider[] {
+    return this.identityProviders
   }
 
-  async getIdentityProvider(type: string): Promise<AbstractIdentityProvider> {
+  getIdentityProvider(type: string): AbstractIdentityProvider {
     for (const identityProvider of this.identityProviders) {
       if (identityProvider.type === type) {
         return identityProvider
       }
     }
 
-    return Promise.reject('IdentityProvider not found for type: ' + type)
+    throw Error('IdentityProvider not found for type: ' + type)
   }
 
   async getIdentities(): Promise<AbstractIdentity[]> {
@@ -39,8 +36,11 @@ export class IdentityManager {
   }
 
   async getIdentity(did: string): Promise<AbstractIdentity> {
-    const identities = await this.getIdentities()
-    const identity = identities.find(item => item.did === did)
+    let identity: AbstractIdentity
+    for (const identityProvider of this.identityProviders) {
+      const providerIdentity = await identityProvider.getIdentity(did)
+      if (providerIdentity) identity = providerIdentity
+    }
     if (identity) {
       return identity
     } else {
@@ -48,23 +48,29 @@ export class IdentityManager {
     }
   }
 
-  async createIdentity(identityProviderType: string): Promise<AbstractIdentity> {
-    const identityProvider = await this.getIdentityProvider(identityProviderType)
-    return identityProvider.createIdentity()
+  async createIdentity(identityProviderType?: string, options?: any): Promise<AbstractIdentity> {
+    const identityProvider = identityProviderType
+      ? this.getIdentityProvider(identityProviderType)
+      : this.getDefaultIdentityProvider()
+    return identityProvider.createIdentity(options)
   }
 
   async importIdentity(identityProviderType: string, secret: string): Promise<AbstractIdentity> {
-    const identityProvider = await this.getIdentityProvider(identityProviderType)
+    const identityProvider = this.getIdentityProvider(identityProviderType)
     return identityProvider.importIdentity(secret)
   }
 
   async exportIdentity(identityProviderType: string, did: string): Promise<string> {
-    const identityProvider = await this.getIdentityProvider(identityProviderType)
+    const identityProvider = this.getIdentityProvider(identityProviderType)
     return identityProvider.exportIdentity(did)
   }
 
   async deleteIdentity(identityProviderType: string, did: string): Promise<boolean> {
-    const identityProvider = await this.getIdentityProvider(identityProviderType)
+    const identityProvider = this.getIdentityProvider(identityProviderType)
     return identityProvider.deleteIdentity(did)
+  }
+
+  private getDefaultIdentityProvider(): AbstractIdentityProvider {
+    return this.identityProviders[0]
   }
 }

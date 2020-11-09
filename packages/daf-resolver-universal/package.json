@@ -1,7 +1,7 @@
 {
   "name": "daf-resolver-universal",
-  "description": "DAF universal resolver",
-  "version": "2.0.0",
+  "description": "DAF resolver plugin using the uniresolver.io API.",
+  "version": "6.3.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -13,7 +13,8 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.5",
-    "typescript": "^3.7.5"
+    "jest-fetch-mock": "^3.0.3",
+    "typescript": "^3.8.3"
   },
   "files": [
     "build/**/*",

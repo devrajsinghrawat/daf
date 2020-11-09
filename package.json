@@ -5,9 +5,13 @@
     "build": "lerna run build",
     "publish": "lerna publish",
     "bootstrap": "lerna bootstrap",
-    "test": "jest --config=jest.json",
+    "docs": "ts-node ./scripts/generate-docs.ts && api-documenter markdown -i ./tmpapi -o ./docs/api && rm -rf ./tmpapi",
+    "test": "jest --config=jest.json --maxWorkers=2",
     "test:watch": "jest --config=jest.json --watch",
-    "daf": "./packages/daf-cli/bin/daf.js"
+    "daf": "./packages/daf-cli/bin/daf.js",
+    "prettier": "prettier --write '{packages,__tests__, !build}/**/*.ts'",
+    "build-clean": "rimraf ./packages/*/build ./packages/*/node_modules ./packages/*/tsconfig.tsbuildinfo",
+    "publish-beta": "yarn build && npx lerna publish --canary premajor --preid beta --pre-dist-tag beta"
   },
   "workspaces": [
     "packages/*"
@@ -19,18 +23,24 @@
     }
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.2.0",
-    "@commitlint/config-conventional": "^8.2.0",
-    "@types/jest": "^24.0.23",
-    "husky": "^3.0.9",
-    "jest": "^24.9.0",
-    "lerna": "^3.18.4",
-    "lerna-changelog": "^0.8.3",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@microsoft/api-documenter": "^7.7.12",
+    "@microsoft/api-extractor": "^7.7.8",
+    "@types/jest": "^25.1.4",
+    "codecov": "^3.6.5",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "jest-fetch-mock": "^3.0.3",
+    "lerna": "^3.20.2",
+    "lerna-changelog": "^1.0.1",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
-    "semantic-release": "^16.0.0-beta.31",
-    "ts-jest": "^24.1.0",
-    "typescript": "^3.7.5"
+    "rimraf": "^3.0.2",
+    "semantic-release": "^17.0.4",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
   },
   "repository": {
     "type": "git",
@@ -38,5 +48,17 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "release": {
+    "branches": [
+      "master",
+      {
+        "name": "beta",
+        "prerelease": true
+      }
+    ]
+  },
+  "dependencies": {
+    "rimraf": "^3.0.2"
   }
 }

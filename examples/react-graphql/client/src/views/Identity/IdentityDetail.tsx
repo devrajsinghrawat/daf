@@ -3,23 +3,24 @@ import { Box, Heading, Button, Text } from 'rimble-ui'
 import { useParams, useHistory } from 'react-router-dom'
 import { AppContext } from '../../context/AppProvider'
 import { useMutation } from '@apollo/react-hooks'
-import * as queries from '../../queries'
+import * as queries from '../../gql/queries'
+import * as mutations from '../../gql/mutations'
 
 interface IdentityDetail {}
 
 const Component: React.FC<IdentityDetail> = () => {
   let { id } = useParams()
   let history = useHistory()
-  const [appState, setDefaultDid] = useContext(AppContext)
+  const { appState, setDefaultDid } = useContext(AppContext)
   const { defaultDid } = appState
-  const [deleteIdentity] = useMutation(queries.deleteIdentity, {
+  const [deleteIdentity] = useMutation(mutations.deleteIdentity, {
     refetchQueries: [{ query: queries.managedIdentities }],
   })
 
   const deleteId = (did: string | undefined) => {
     deleteIdentity({
       variables: {
-        type: 'ethr-did-fs',
+        type: 'rinkeby-ethr-did',
         did: did,
       },
     }).then(() => {
@@ -45,7 +46,7 @@ const Component: React.FC<IdentityDetail> = () => {
               ? 'This is your current default identity'
               : 'Set this DID as the default identity'}
           </Text>
-          <Button mt={3} mb={3} mr={3} onClick={() => setDefaultDid(id)} disabled={defaultDid === id}>
+          <Button mt={3} mb={3} mr={3} onClick={() => setDefaultDid(id || '')} disabled={defaultDid === id}>
             Set as default
           </Button>
         </Box>

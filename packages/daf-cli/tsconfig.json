@@ -6,19 +6,18 @@
   },
   "references": [
     { "path": "../daf-core" },
-    { "path": "../daf-data-store" },
-    { "path": "../daf-debug" },
     { "path": "../daf-did-comm" },
     { "path": "../daf-did-jwt" },
+    { "path": "../daf-elem-did" },
     { "path": "../daf-ethr-did" },
     { "path": "../daf-fs" },
     { "path": "../daf-libsodium" },
-    { "path": "../daf-node-sqlite3" },
     { "path": "../daf-resolver" },
     { "path": "../daf-resolver-universal" },
     { "path": "../daf-selective-disclosure" },
     { "path": "../daf-trust-graph" },
     { "path": "../daf-url" },
+    { "path": "../daf-web-did" },
     { "path": "../daf-w3c" }
   ]
 }

@@ -1,4 +1,4 @@
-export { Core, EventTypes, Resolver } from './core'
+export { Agent, EventTypes, Resolver } from './agent'
 export { AbstractActionHandler } from './action/action-handler'
 export { IdentityManager } from './identity/identity-manager'
 export { AbstractIdentity } from './identity/abstract-identity'
@@ -7,24 +7,28 @@ export { AbstractIdentityProvider, IdentityProviderDerived } from './identity/ab
 export {
   AbstractKeyManagementSystem,
   AbstractKey,
-  KeyType,
   SerializedKey,
 } from './identity/abstract-key-management-system'
 export { AbstractIdentityStore, SerializedIdentity } from './identity/abstract-identity-store'
 export { AbstractKeyStore } from './identity/abstract-key-store'
-export { AbstractMessageValidator } from './message/abstract-message-validator'
-export { Message } from './message/message'
+export { AbstractSecretBox } from './identity/abstract-secret-box'
+export { AbstractMessageHandler } from './message/abstract-message-handler'
 export { ServiceManager, LastMessageTimestampForInstance, ServiceEventTypes } from './service/service-manager'
 export { AbstractServiceController } from './service/abstract-service-controller'
-import * as Types from './types'
-import { baseTypeDefs } from './graphql/graphql-base-type-defs'
-import * as GqlCore from './graphql/graphql-core'
-import * as GqlIdentityManager from './graphql/graphql-identity-manager'
+export { Gql } from './graphql/index'
+export { Action } from './types'
+export { IdentityStore } from './identity/identity-store'
+export { KeyStore } from './identity/key-store'
 
-const Gql = {
-  baseTypeDefs,
-  Core: GqlCore,
-  IdentityManager: GqlIdentityManager,
-}
+import { Key, KeyType } from './entities/key'
+import { Identity } from './entities/identity'
+import { Claim } from './entities/claim'
+import { Credential } from './entities/credential'
+import { Presentation } from './entities/presentation'
+import { Message, MetaData } from './entities/message'
 
-export { Types, Gql }
+export const Entities = [Key, Identity, Message, Claim, Credential, Presentation]
+
+export { KeyType, Key, Identity, Message, Claim, Credential, Presentation, MetaData }
+
+export { migrations } from './migrations'

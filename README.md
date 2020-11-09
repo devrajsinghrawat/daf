@@ -1,12 +1,26 @@
+[![uport-project](https://circleci.com/gh/uport-project/daf.svg?style=svg)](https://circleci.com/gh/uport-project/daf/tree/master)
+[![codecov](https://codecov.io/gh/uport-project/daf/branch/master/graph/badge.svg)](https://codecov.io/gh/uport-project/daf)
+
 # DID Agent Framework
+
+## Documentation
+
+- [Guide](docs/Docs.md)
+- [Data flow diagrams](docs/DataFlows.md)
+- [Message Validator chain](docs/MessageValidator.md)
+- [API Reference](docs/api/index.md)
 
 ## Architecture
 
 ![architecture](docs/assets/architecture.png)
 
-## Getting started
+## ORM Data model
 
-DAF monorepo uses yarn workspaces & lerna
+[![orm](docs/assets/orm-data-model.png)](docs/assets/orm-data-model.png)
+
+## Local development
+
+DAF monorepo uses [yarn](https://yarnpkg.com/) [workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) and [lerna](https://lerna.js.org/)
 
 Install root package dependencies
 
@@ -55,13 +69,7 @@ npx daf identity-manager --create
 Create and send Verifiable Credential
 
 ```
-npx daf credential --create --send
-```
-
-Receive new messages
-
-```
-npx daf listen
+npx daf credential --qrcode --send
 ```
 
 Start GraphQL server
